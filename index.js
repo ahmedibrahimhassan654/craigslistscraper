@@ -1,26 +1,36 @@
+const axios = require("axios");
 const request = require("request-promise");
 const cheerio = require("cheerio");
+const fs = require("fs");
+const getHTML = require("html-get");
+// const url = "https://www.indeed.com/jobs?q=javascript&l=New+York%2C+NY";
 
-const url = "https://sfbay.craigslist.org/d/software-qa-dba-etc/search/sof";
+const url = "https://sfbay.craigslist.org/search/sof";
 
 const scrapeSample = {
-  title: "Full Stack Developer - Intern",
+  title: "Technical Autonomous Vehicle Trainer",
   description:
-    "We are building an advanced financial and money management platform. We are looking for a Software Development intern to join our team. This is a paid internship with a likelihood to convert into a full-time opportunity.",
-  datePosted: new Date("2022-04-22 16:04"),
-  url: "https://sfbay.craigslist.org/sby/sof/d/san-jose-full-stack-developer-intern/7474691802.html",
+    "We're the driverless car company. We're building the world's best autonomous vehicles to safely connect people to the places, things, and experiences they care about.",
+  datePosted: new Date("2018-07-13"),
+  url: "https://sfbay.craigslist.org/sfc/sof/d/technical-autonomous-vehicle/6642626746.html",
   hood: "(SOMA / south beach)",
   address: "1201 Bryant St.",
   compensation: "23/hr",
 };
-async function getData() {
+
+const scrapeResults = [];
+
+async function scrapeJobHeader() {
   try {
-    const htmlResult = await request.get(url);
-    const $ = cheerio.load(htmlResult);
-    console.log($.body);
-  } catch (error) {
-    console.log(error);
+    const html = await axios.get(url);
+    // console.log(html);
+    const $ = await cheerio.load(html.data);
+    $(".result-info").each((i, el) => {
+      console.log($(el).children("h3").text());
+    });
+  } catch (err) {
+    console.error(err);
   }
 }
 
-getData();
+scrapeJobHeader();
