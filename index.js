@@ -23,10 +23,16 @@ const scrapeResults = [];
 async function scrapeJobHeader() {
   try {
     const html = await axios.get(url);
-    // console.log(html);
+    //  console.log(html.data);
     const $ = await cheerio.load(html.data);
     $(".result-info").each((i, el) => {
-      console.log($(el).children("h3").text());
+      const title = $(el).find(".result-title");
+      const titiledesc = title.text();
+      const urljob = $(el).find(".result-title").attr("href");
+      const jobtime = new Date($(el).find(".result-date").attr("datetime"));
+      const scrapeResult = { titiledesc, urljob, jobtime };
+      scrapeResults.push(scrapeResult);
+      console.log(scrapeResults);
     });
   } catch (err) {
     console.error(err);
